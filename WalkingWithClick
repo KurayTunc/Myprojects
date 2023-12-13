@@ -1,0 +1,57 @@
+using UnityEngine;
+using UnityEngine.AI; 
+
+public class PlayerController : MonoBehaviour
+{
+    private Animator crouch_walk;
+    public Camera cam;
+    public NavMeshAgent agent; // ajani hareket ettirmek için olan referans.
+    private Vector3 lastPosition;
+
+
+    private void Start()
+    {
+        crouch_walk = GetComponent<Animator>();
+    }
+
+
+    void Update()
+    {
+
+        if(Input.GetMouseButtonDown(0)) // sol fare tıklaması yapıldı mı ?
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition); // anlık fare konumunu alıp o konuma bir ışın oluşturma 
+            RaycastHit hit; // hangi nesneleri vurduğumuzu içerisinde toplamak için olan variable
+
+            
+
+           if ( Physics.Raycast(ray , out hit))// 
+            {
+                // Move Agent !
+                agent.SetDestination(hit.point);
+                crouch_walk.SetBool("IsMoving", true);
+                if (agent.transform.position == hit.point)
+                {
+                    crouch_walk.SetBool("IsMoving", false);
+                }
+            }
+        }
+        WalkingAnim();
+        
+
+        
+    }
+    void WalkingAnim()
+    {
+
+        if (this.gameObject.transform.position != lastPosition)
+        {
+            crouch_walk.SetBool("IsMoving", true);
+        }
+        else
+        {
+            crouch_walk.SetBool("IsMoving", false);
+        }
+        lastPosition = this.gameObject.transform.position;
+    }
+}
